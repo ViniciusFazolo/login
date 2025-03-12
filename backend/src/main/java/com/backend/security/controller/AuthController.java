@@ -16,8 +16,8 @@ import com.backend.security.dto.LoginRequestDTO;
 import com.backend.security.dto.LoginResponseDTO;
 import com.backend.security.dto.RegisterRequestDTO;
 import com.backend.security.exceptions.PadraoException;
-import com.backend.security.infra.security.TokenService;
 import com.backend.security.repository.UsuarioRepository;
+import com.backend.security.services.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -51,6 +51,7 @@ public class AuthController {
             newUser.setPassword(passwordEncoder.encode(credentials.password()));
             newUser.setEmail(credentials.email());
             newUser.setName(credentials.name());
+            newUser.setRole(credentials.role());
             this.usuarioRepository.save(newUser);
             
             String token = this.tokenService.generateToken(newUser);
@@ -62,10 +63,6 @@ public class AuthController {
 
     @GetMapping("/validate/{token}")
     public boolean validateToken(@PathVariable String token){
-        if(!tokenService.validateToken(token).isEmpty()){
-            return true;
-        }
-
-        return false;
+        return !tokenService.validateToken(token).isEmpty();
     }
 }
