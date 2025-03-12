@@ -15,6 +15,7 @@ import com.backend.security.domain.Usuario;
 import com.backend.security.dto.LoginRequestDTO;
 import com.backend.security.dto.LoginResponseDTO;
 import com.backend.security.dto.RegisterRequestDTO;
+import com.backend.security.dto.RegisterResponseDTO;
 import com.backend.security.exceptions.PadraoException;
 import com.backend.security.repository.UsuarioRepository;
 import com.backend.security.services.TokenService;
@@ -43,7 +44,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<LoginResponseDTO> register(@RequestBody RegisterRequestDTO credentials){
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequestDTO credentials){
         Optional<Usuario> usuario = usuarioRepository.findByEmail(credentials.email());
 
         if(usuario.isEmpty()){
@@ -52,10 +53,9 @@ public class AuthController {
             newUser.setEmail(credentials.email());
             newUser.setName(credentials.name());
             newUser.setRole(credentials.role());
-            this.usuarioRepository.save(newUser);
+            newUser = this.usuarioRepository.save(newUser);
             
-            String token = this.tokenService.generateToken(newUser);
-            return ResponseEntity.ok(new LoginResponseDTO(token, newUser.getName()));
+            return ResponseEntity.ok(new RegisterResponseDTO(newUser.getId(), newUser.getName(), newUser.getEmail(), newUser.getRole()));
         }
 
         return ResponseEntity.badRequest().build();
