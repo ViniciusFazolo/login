@@ -6,17 +6,17 @@ import { catchError, map, of } from 'rxjs';
 export const admGuard: CanActivateFn = (route, state) => {
   const loginService = inject(LoginService);
   const _router = inject(Router);
-  const name = loginService.getName;
+  const role = loginService.getRole;
   const token = loginService.getToken;
 
-  if (!name || !token) {
+  if (!role || !token) {
     loginService.logout();
     return _router.createUrlTree(['']);
   }
 
   return loginService.isTokenValid(token).pipe(
     map((isValid) => {
-      if (isValid && name == 'vinicius') {
+      if (isValid && role == 'ADMIN') {
         return true;
       }
 
