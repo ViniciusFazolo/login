@@ -22,7 +22,7 @@ export class LoginService {
         this.setUser(res)
       },
       error: err => {
-        this._toastrService.error(err.error.message, 'Erro');
+        this._toastrService.error(err.message, 'Erro');
       },
       complete: () => {
         this.verifyUserType()

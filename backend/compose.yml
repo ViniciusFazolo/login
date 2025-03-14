@@ -1,0 +1,24 @@
+services:
+  mariadb:
+    image: mysql:latest
+    container_name: login_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: login
+    ports:
+      - "3311:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+      image: phpmyadmin
+      container_name: login_phpmyadmin
+      environment: 
+        PMA_HOST: mariadb
+        PMA_USER: root
+        PMA_PASSWORD: 1234
+      restart: always
+      ports:
+        - 9011:80
+volumes:
+  mysql_data:
